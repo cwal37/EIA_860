@@ -8,7 +8,6 @@ Created on Sun Feb 15 15:21:04 2015
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from Charting_v2 import *
 import os
 
 # configure run
@@ -21,7 +20,7 @@ base_data = pd.read_excel(r'./GeneratorY2012.xls', 'Operable', skiprows=1)
 #print list(base_data.columns.values)
 
 
-# clean data based on desired analysis parameters
+
 working = base_data
 working = working[working['Operating Year'] > 1992]
 
@@ -30,6 +29,7 @@ traditional = ['ST', 'GT', 'IC', 'CA', 'CT', 'CS', 'CC', 'HY', 'BT']
 storage = ['BA', 'CE', 'CE', 'FW', 'ES', 'CP', 'PS']
 
 renew_data = working
+trad_data = working
 
 for tech in traditional:
     renew_data = renew_data[renew_data['Prime Mover'] != tech]
@@ -37,6 +37,13 @@ for tech in traditional:
 for tech in storage:
     renew_data = renew_data[renew_data['Prime Mover'] != tech]
 
+for tech in renewables:
+    trad_data = trad_data[trad_data['Prime Mover'] != tech]
+    
+for tech in storage:
+    trad_data = trad_data[trad_data['Prime Mover'] != tech]
+
+# Renewable Generation Start
 
 capacities = pd.DataFrame(columns=renewables)
 year = 1992
@@ -63,7 +70,7 @@ renew_tech = list(capacities.columns.values)
 x = range (0,21)
 years = list(years)
 for tech in renew_tech:
-    plt.plot(x, capacities[tech], linewidth = 2, label = tech)
+    plt.plot(x, capacities[tech], linewidth = 2, label = tech, linestyle = '--', marker = 'd')
     plt.title('20 Years of Renewable Capacity Additions')
     plt.xticks(x, years, rotation = 60)
     plt.ylabel('MW')
@@ -71,6 +78,49 @@ for tech in renew_tech:
 plt.legend(loc = 2)        
 plt.savefig('20 Years of Renewable Capacity Additions.png', bbox_inches = 'tight')
 plt.close()
+
+
+
+# Traditional Generation Start
+
+capacities = pd.DataFrame(columns=traditional)
+year = 1992
+years = range(1992, 2013) 
+i = 0  
+for year in range (1992, 2013):
+    
+    current_year = trad_data[trad_data['Operating Year'] == year]    
+    
+   
+    for tech in traditional:
+
+        cap_add = current_year[current_year['Prime Mover'] == tech]
+        capacity = cap_add['Nameplate Capacity (MW)'].sum()
+        capacities.loc[i, tech] = capacity        
+
+    year = year + 1
+    i = i + 1
+
+#capacities = capacities.drop(['HA', 'HB', 'HK', 'WS'], 1)
+
+trad_tech = list(capacities.columns.values)
+
+x = range (0,21)
+years = list(years)
+for tech in trad_tech:
+    plt.plot(x, capacities[tech], linewidth = 2, label = tech)
+    plt.title('20 Years of Traditional Capacity Additions')
+    plt.xticks(x, years, rotation = 60)
+    plt.ylabel('MW')
+    plt.xlabel('Year')
+plt.legend(loc = 2)        
+plt.savefig('20 Years of Traditional Capacity Additions.png', bbox_inches = 'tight')
+plt.close()
+
+
+
+
+
 
 
 
