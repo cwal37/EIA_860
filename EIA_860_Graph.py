@@ -38,18 +38,41 @@ for tech in storage:
     renew_data = renew_data[renew_data['Prime Mover'] != tech]
 
 
+capacities = pd.DataFrame(columns=renewables)
 year = 1992
-
 years = range(1992, 2013) 
-
+i = 0  
 for year in range (1992, 2013):
     
     current_year = renew_data[renew_data['Operating Year'] == year]    
-        
-    for tech in renewables:
-        cap_add = 
     
+   
+    for tech in renewables:
+
+        cap_add = current_year[current_year['Prime Mover'] == tech]
+        capacity = cap_add['Nameplate Capacity (MW)'].sum()
+        capacities.loc[i, tech] = capacity        
+
     year = year + 1
+    i = i + 1
+
+capacities = capacities.drop(['HA', 'HB', 'HK', 'WS'], 1)
+
+renew_tech = list(capacities.columns.values)
+
+x = range (0,21)
+years = list(years)
+for tech in renew_tech:
+    plt.plot(x, capacities[tech], linewidth = 2, label = tech)
+    plt.title('20 Years of Renewable Capacity Additions')
+    plt.xticks(x, years, rotation = 60)
+    plt.ylabel('MW')
+    plt.xlabel('Year')
+plt.legend(loc = 2)        
+plt.savefig('20 Years of Renewable Capacity Additions.png', bbox_inches = 'tight')
+plt.close()
+
+
 
 #states = working['State']
 
@@ -73,18 +96,6 @@ for year in range (1992, 2013):
 #plt.close()
 #plt.legend(loc=2, title = capacities['Prime Mover'])
 
-PMs = renewables.groupby("Prime Mover")
-#op_year = PMs.groupby('Operating Year')
-capacities = op_year.sum()
-
-Technologies = PMs.groups.keys()
-renewables = renewables.sort(['Operating Year'])
-#print Technologies
-#print PMs
-#
-for technology in Technologies:
-    scatterByZ(renewables, 'Operating Year', 'Nameplate Capacity (MW)', 'Prime Mover', 'no', 'Tech','MW', 'yes', save_loc = output_location)
-#
 
 
 #prime_movers = working.groupby('Prime Mover')
@@ -107,54 +118,6 @@ for technology in Technologies:
 #plt.close()
 
 
-##
-#plt.hist(res, bins = 10)
-##plt.show()
-#plt.savefig('hist of res.png')
-#plt.close()
-#
-#plt.hist(ans_res, bins = 10)
-##plt.show()
-#plt.savefig('hist of anscombe res.png')
-#plt.close()
-#
-#
-#plt.hist(dev_res, bins = 10)
-##plt.show()
-#plt.savefig('hist of deviance res.png')
-#plt.close()
-
-#
-##plot results
 #
 if not os.path.exists(output_location): 
     os.makedirs(output_location)
-#
-#scatterByZ(working, 'Fitted', yvar, 'Utility', 'high','$1000s','$1000s', 'no', save_loc = output_location)
-
-#aaa = working.groupby("Utility")
-#utilities = aaa.groups.keys()
-#utilities.sort()
-#
-#for utility in utilities:
-#    scatterByZ(working, 'Fitted', yvar, 'Utility', utility, '$1000s','$1000s', 'yes', save_loc = output_location)
-#
-#for xvar in xvars:
-#    scatterByZ(working, xvar, 'residuals', 'Turbine', 'no', '','', 'no', save_loc = output_location)
-#    scatterByZ(working, xvar, 'residuals', 'PeerGroup','no','','', 'no', save_loc = output_location)
-
-
-#barByX(working, 'Utility', yvar, 'Utility Actual/Predicted', 'Utility', save_loc = output_location)
-
-#renew_data = working[working['Prime Mover'] != traditional]
-#renewables = renewables[renewables['Prime Mover'] != 'BA']
-#renewables = renewables[renewables['Prime Mover'] != 'CE']
-#renewables = renewables[renewables['Prime Mover'] != 'FW']
-#renewables = renewables[renewables['Prime Mover'] != 'GT']
-#renewables = renewables[renewables['Prime Mover'] != 'IC']
-#renewables = renewables[renewables['Prime Mover'] != 'CA']
-#renewables = renewables[renewables['Prime Mover'] != 'CT']
-#renewables = renewables[renewables['Prime Mover'] != 'CS']
-#renewables = renewables[renewables['Prime Mover'] != 'CC']
-#renewables = renewables[renewables['Prime Mover'] != 'CE']
-#renewables = renewables[renewables['Prime Mover'] != 'BT']
