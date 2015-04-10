@@ -16,6 +16,7 @@ output_location = r"./2012_results/"
 
 # load all data
 base_data = pd.read_excel(r'./GeneratorY2012.xls', 'Operable', skiprows=1)
+es_key = pd.read_csv(r'./energy_source_key.csv')
 
 #print list(base_data.columns.values)
 
